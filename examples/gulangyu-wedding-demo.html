@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鼓浪屿 · 情侣婚纱照 摄影方案(小红书爆款驱动)</title>
+
+<!-- Fonts: Fraunces (editorial Latin display) + Noto Serif SC (elegant CJK) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   THEME — warm editorial / vintage cinematic
+   =========================================== */
+:root{
+  --stage-bg:#15110d;
+  --slide-bg:#f4ece0;
+  --ink:#241f1a;
+  --sub:#7c6f5f;
+  --brick:#b5613f;
+  --gold:#bf8f4a;
+  --sea:#5f8a9c;
+  --rose:#bb4767;
+  --olive:#7d8a5c;
+  --card:#fbf5ea;
+  --line:#e0d3c0;
+  --tag:#ece0cd;
+  --hot:#d23b54;
+
+  --font-disp:'Fraunces', 'Noto Serif SC', serif;
+  --font-cjk:'Noto Serif SC', 'Songti SC', serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* ===========================================
+   FIXED 16:9 STAGE — 1280×720, scaled to fit
+   =========================================== */
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--stage-bg)}
+.deck-viewport{position:fixed;inset:0;overflow:hidden;background:var(--stage-bg)}
+.deck-stage{position:absolute;left:0;top:0;width:1280px;height:720px;overflow:hidden;transform-origin:0 0;background:var(--slide-bg)}
+.slide{position:absolute;inset:0;width:1280px;height:720px;overflow:hidden;display:block;visibility:hidden;opacity:0;pointer-events:none;background:var(--slide-bg)}
+.slide.active,.slide.visible{visibility:visible;opacity:1;pointer-events:auto;z-index:1}
+img,svg{max-width:100%;max-height:100%}
+@media print{
+  html,body{width:1280px;height:auto;overflow:visible;background:#fff}
+  .deck-viewport{position:static;overflow:visible;background:#fff}
+  .deck-stage{position:static;width:auto;height:auto;transform:none !important;background:none}
+  .slide{position:relative;display:block !important;visibility:visible !important;opacity:1 !important;pointer-events:auto !important;width:1280px;height:720px;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.2s !important}}
+
+/* ===========================================
+   SLIDE COMMON LAYOUT
+   =========================================== */
+.slide{font-family:var(--font-cjk);color:var(--ink);padding:46px 64px 42px}
+.slide-content{display:flex;flex-direction:column;height:100%;position:relative;z-index:2}
+
+/* paper grain + warm vignette */
+.slide::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(120% 80% at 85% 8%, rgba(191,143,74,.10), transparent 55%),
+            radial-gradient(100% 90% at 10% 100%, rgba(181,97,63,.08), transparent 60%);}
+.slide::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(rgba(70,55,40,.045) 1px, transparent 1.3px);background-size:4px 4px;}
+
+/* header */
+.head{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1.5px solid var(--ink);padding-bottom:12px;margin-bottom:0}
+.head .left{display:flex;align-items:flex-end;gap:16px}
+.phase{font-size:12px;font-weight:700;letter-spacing:3px;color:#fff;background:var(--ink);padding:5px 13px;border-radius:2px;white-space:nowrap}
+.phase.prep{background:var(--brick)}.phase.shoot{background:var(--sea)}.phase.post{background:var(--olive)}
+.htitle{font-size:31px;font-weight:700;letter-spacing:1.5px;line-height:1}
+.htitle small{font-size:13.5px;font-weight:400;color:var(--sub);letter-spacing:.5px;margin-left:10px}
+.head .pg{font-family:var(--font-disp);font-size:21px;font-weight:300;color:var(--brick)}
+.head .pg b{font-weight:600;color:var(--ink)}
+
+/* body fills below header; blocks grow to balance the page (no plain centering) */
+.body{flex:1;min-height:0;display:flex;flex-direction:column;gap:18px;padding-top:22px}
+.fill{flex:1 1 auto;min-height:0}
+
+/* cards — content distributed evenly inside the grown card */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px;
+  box-shadow:0 8px 20px rgba(60,45,30,.05);display:flex;flex-direction:column;justify-content:space-evenly}
+.card h3{font-size:19px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.card p{font-size:15.5px;line-height:1.7;color:#4a4138}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+
+.subhd{font-family:var(--font-disp);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--brick);margin:2px 0 2px}
+.chips{display:flex;gap:9px;flex-wrap:wrap}
+.chip{background:var(--tag);padding:6px 14px;border-radius:999px;font-size:14px;color:#5b5044}
+.chip.hot{background:var(--hot);color:#fff}.chip.sea{background:var(--sea);color:#fff}.chip.gold{background:var(--gold);color:#fff}
+
+.swatch{display:flex;gap:9px}
+.swatch span{width:42px;height:42px;border-radius:7px;border:1px solid rgba(0,0,0,.06);display:block;box-shadow:inset 0 0 0 2px rgba(255,255,255,.4)}
+
+ul.clean{list-style:none;display:flex;flex-direction:column;justify-content:space-evenly;flex:1}
+ul.clean li{position:relative;padding-left:20px;font-size:15.5px;line-height:1.5;color:#4a4138}
+ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--brick)}
+
+/* tables — fill height: rows distribute extra space evenly */
+.tablefill{flex:1 1 auto;min-height:0;display:flex}
+.tablefill table{height:100%}
+table{width:100%;border-collapse:collapse;font-size:15px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{padding:11px 18px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{background:var(--ink);color:#f4ece0;font-weight:600;font-size:14px;letter-spacing:.5px}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even) td,table tr:nth-child(even) td{background:rgba(224,211,192,.18)}
+.badge{font-size:13px;font-weight:700;padding:3px 11px;border-radius:6px;background:var(--hot);color:#fff}
+.badge.mid{background:var(--gold)}
+.pri-h{color:var(--hot);font-weight:700}.pri-m{color:var(--gold);font-weight:700}
+
+.src{font-size:12px;color:#9c8f7d}
+.src a{color:var(--brick);text-decoration:none;border-bottom:1px dotted var(--brick)}
+
+.note{background:linear-gradient(90deg, rgba(181,97,63,.08), rgba(181,97,63,.02));border-left:4px solid var(--brick);
+  padding:13px 20px;border-radius:0 8px 8px 0;font-size:14.5px;line-height:1.6;color:#5b4d40}
+
+/* === COVER === */
+.cover{padding:0}
+.cover .inner{height:100%;display:grid;grid-template-columns:1.45fr 1fr}
+.cover .lft{padding:0 0 0 64px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.cover .rgt{position:relative;background:linear-gradient(155deg,#2a2018,#4a2f22 55%,#7a4a30);overflow:hidden}
+.cover .rgt::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 70% 30%, rgba(207,170,100,.55), transparent 45%),
+            radial-gradient(circle at 35% 78%, rgba(187,71,103,.30), transparent 50%);}
+.cover .rgt .num{position:absolute;right:-18px;bottom:-58px;font-family:var(--font-disp);font-size:340px;font-weight:300;font-style:italic;color:rgba(244,236,224,.10);line-height:.8}
+.cover .rgt .stamp{position:absolute;top:58px;left:46px;width:132px;height:132px;border:2px solid rgba(244,236,224,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;color:rgba(244,236,224,.85);font-size:12px;letter-spacing:2px;line-height:1.5;transform:rotate(-8deg)}
+.cover .rgt .stamp b{font-family:var(--font-disp);font-size:27px;font-weight:500;display:block}
+.cover .rgt .vtext{position:absolute;right:34px;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:right center;font-family:var(--font-disp);font-size:15px;letter-spacing:6px;color:rgba(244,236,224,.7);white-space:nowrap}
+.cover .kick{font-family:var(--font-disp);font-size:13px;font-weight:500;letter-spacing:4px;text-transform:uppercase;color:var(--brick)}
+.cover .kick::after{content:"";display:block;width:62px;height:2.5px;background:var(--brick);margin-top:12px}
+.cover h1{font-size:66px;font-weight:900;line-height:1.06;letter-spacing:1px;margin:18px 0 4px}
+.cover h1 em{font-family:var(--font-disp);font-style:italic;font-weight:400;color:var(--brick);font-size:50px;display:block;margin-top:4px}
+.cover .lead{font-size:16.5px;line-height:1.7;color:#5b4d40;max-width:460px;margin-top:14px}
+.cover .meta{margin-top:24px}
+
+/* === TOC === */
+.toc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;flex:1;min-height:0}
+.toc .col{display:flex;flex-direction:column}
+.toc .ph-h{font-size:19px;font-weight:700;color:#fff;padding:9px 16px;border-radius:5px;margin-bottom:6px}
+.toc .ph-h.prep{background:var(--brick)}.toc .ph-h.shoot{background:var(--sea)}.toc .ph-h.post{background:var(--olive)}
+.toc .row{display:flex;align-items:center;gap:13px;padding:0 6px;flex:1;border-bottom:1px solid var(--line)}
+.toc .row .n{font-family:var(--font-disp);font-size:24px;font-weight:300;color:var(--brick);min-width:38px}
+.toc .row .t{font-size:16px;color:#3f372e}
+
+/* === DEMO cards === */
+.demowrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1 1 auto;min-height:0}
+.demo{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px 18px;
+  display:flex;flex-direction:column;justify-content:space-evenly;box-shadow:0 8px 20px rgba(60,45,30,.06)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pair figure{margin:0;position:relative}
+.pair .ph{width:100%;height:218px;object-fit:cover;border-radius:9px;display:block;border:1px solid var(--line)}
+.pair svg{width:100%;height:218px;display:block;background:#fff;border:1px dashed #cdbfa9;border-radius:9px}
+.pair .tag-img{position:absolute;left:8px;top:8px;background:var(--hot);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px}
+.pair .tag-sk{position:absolute;left:8px;top:8px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px}
+.pair .pcap{font-size:11px;color:var(--sub);text-align:center;margin-top:5px}
+.pair .pcap a{color:var(--brick);text-decoration:none}
+.demo .cap{font-size:18px;font-weight:700;display:flex;align-items:center;gap:9px}
+.demo .cap .dn{font-family:var(--font-disp);font-style:italic;font-weight:500;color:var(--brick)}
+.demo .match{font-size:12.5px;color:#5b4d40;background:#f4e9da;border-left:3px solid var(--brick);padding:8px 12px;border-radius:0 7px 7px 0;line-height:1.45}
+.demo .pmeta{font-size:12.5px;color:#5b4d40;line-height:1.55}
+.demo .pmeta b{color:var(--ink)}
+.demo.tips{justify-content:center;gap:10px}
+.demo.tips h3{font-size:20px}
+.demo.tips ul.clean{flex:none}
+.demo.tips ul.clean li{font-size:14.5px;margin-bottom:8px}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.slide.visible .reveal{opacity:1;transform:none}
+.slide.visible .reveal:nth-child(1){transition-delay:.05s}
+.slide.visible .reveal:nth-child(2){transition-delay:.13s}
+.slide.visible .reveal:nth-child(3){transition-delay:.21s}
+.slide.visible .reveal:nth-child(4){transition-delay:.29s}
+
+/* === CONTROL CHROME === */
+#bar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;
+  background:rgba(21,17,13,.78);backdrop-filter:blur(10px);padding:8px 18px;border-radius:999px;z-index:1000;border:1px solid rgba(244,236,224,.12)}
+#bar button{background:none;border:none;color:#f4ece0;font-size:20px;cursor:pointer;padding:2px 8px;border-radius:7px;line-height:1;transition:background .2s}
+#bar button:hover{background:rgba(255,255,255,.16)}
+#counter{color:#f4ece0;font-family:var(--font-disp);font-size:14px;min-width:58px;text-align:center}
+.nav-hint{position:fixed;top:16px;left:50%;transform:translateX(-50%);color:#e8dcca;font-size:13px;background:rgba(21,17,13,.6);
+  padding:6px 16px;border-radius:999px;z-index:1000;transition:opacity .6s;letter-spacing:.5px}
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--brick);z-index:1001;transition:width .4s ease}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
+
+    <!-- 01 COVER -->
+    <section class="slide cover active">
+      <div class="inner">
+        <div class="lft">
+          <div class="kick reveal">Xiaohongshu-Driven Wedding Photo Plan</div>
+          <h1 class="reveal">鼓浪屿 · 情侣婚纱照<em>Gulangyu Seaside Wedding</em></h1>
+          <p class="lead reveal">基于小红书 &amp; 旅拍高热门攻略研究 → 提炼爆款机位 / 姿势 / 穿搭 / 时段 → 复刻并避坑升级的可执行海岛旅拍方案。</p>
+          <div class="meta reveal">
+            <div class="chips">
+              <span class="chip hot">🔥 小红书爆款驱动</span>
+              <span class="chip sea">🏝️ 厦门 · 鼓浪屿</span>
+              <span class="chip">💍 海岛婚纱 / 复古洋楼</span>
+              <span class="chip">👫 情侣双人</span>
+              <span class="chip gold">⏰ 建议 10–11 月</span>
+            </div>
+          </div>
+        </div>
+        <div class="rgt">
+          <div class="stamp">EST.<b>2026</b>SEASIDE FILM</div>
+          <div class="vtext">XIAMEN · GULANGYU</div>
+          <div class="num">G</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 TOC -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><h2 class="htitle">方案目录<small>三阶段工作流</small></h2></div>
+          <div class="pg"><b>02</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="toc">
+            <div class="col reveal">
+              <div class="ph-h prep">📋 拍前准备</div>
+              <div class="row"><span class="n">01</span><span class="t">主题与氛围</span></div>
+              <div class="row"><span class="n">02</span><span class="t">场景与时段</span></div>
+              <div class="row"><span class="n">03</span><span class="t">服装与造型(含道具)</span></div>
+              <div class="row"><span class="n">04</span><span class="t">风险与备选</span></div>
+            </div>
+            <div class="col reveal">
+              <div class="ph-h shoot">📸 拍摄中</div>
+              <div class="row"><span class="n">05</span><span class="t">机位造型 Demo · 构图</span></div>
+              <div class="row"><span class="n">06</span><span class="t">机位造型 Demo · 姿势</span></div>
+              <div class="row"><span class="n">07</span><span class="t">机位造型 Demo · 海景</span></div>
+              <div class="row"><span class="n">08</span><span class="t">拍摄流程 &amp; Shot List</span></div>
+            </div>
+            <div class="col reveal">
+              <div class="ph-h post">🎨 后期</div>
+              <div class="row"><span class="n">09</span><span class="t">后期参考</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 📋 拍前准备 ===== -->
+
+    <!-- 03 主题与氛围 -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase prep">📋 拍前准备</span><h2 class="htitle">主题与氛围<small>文字定调 + 视觉定调</small></h2></div>
+          <div class="pg"><b>03</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="grid g2 fill">
+            <div class="card reveal">
+              <h3>📖 一句话主题</h3>
+              <p>「南洋老洋楼里的一场私奔」——把鼓浪屿的红砖洋楼、三角梅、海风与夕阳,拍成一组复古电影感、有故事的情侣海岛婚纱。</p>
+              <div>
+                <div class="subhd">关键词</div>
+                <div class="chips"><span class="chip">复古电影感</span><span class="chip">南洋风情</span><span class="chip">海风松弛</span><span class="chip">金色夕阳</span></div>
+              </div>
+              <div>
+                <div class="subhd">画面想象</div>
+                <p>傍晚四点后,金黄夕阳打在斑驳红砖墙上,新娘白纱被海风吹起,新郎在旋转楼梯旁伸手相牵——像电影里偷拍到的真实瞬间。</p>
+              </div>
+            </div>
+            <div class="card reveal">
+              <h3>🎨 情绪板 · 配色</h3>
+              <div>
+                <div class="subhd">主色</div>
+                <div class="swatch"><span style="background:#f3ece0"></span><span style="background:#b5613f"></span></div>
+                <p style="font-size:13.5px;margin-top:6px">象牙白 #f3ece0 · 砖红 #b5613f</p>
+              </div>
+              <div>
+                <div class="subhd">辅色 / 点缀</div>
+                <div class="swatch"><span style="background:#bf8f4a"></span><span style="background:#5f8a9c"></span><span style="background:#bb4767"></span><span style="background:#7d8a5c"></span></div>
+                <p style="font-size:13.5px;margin-top:6px">夕阳金 · 海雾蓝 · 三角梅玫红 · 老绿</p>
+              </div>
+              <div>
+                <div class="subhd">氛围词</div>
+                <p>暖调、低饱和、轻微褪色;红砖与白纱的冷暖对比是画面骨架。浪漫、怀旧、松弛,拒绝僵硬棚拍。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 场景与时段 -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase prep">📋 拍前准备</span><h2 class="htitle">场景与时段<small>在哪拍 + 什么时候去</small></h2></div>
+          <div class="pg"><b>04</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="tablefill reveal">
+            <table>
+              <tr><th>顺序</th><th>机位</th><th>拍法</th><th>推荐时段</th><th>共识度</th></tr>
+              <tr><td>①</td><td>最美转角</td><td>旋转楼梯框架构图,趁早抢干净背景</td><td>06:30–07:30 清晨柔光</td><td><span class="badge">高</span></td></tr>
+              <tr><td>②</td><td>鼓新路红砖洋楼</td><td>整条街红砖 + 三角梅,手扶墙行走抓拍</td><td>08:00–09:00 斜射晨光</td><td><span class="badge">高</span></td></tr>
+              <tr><td>③</td><td>白色转角(平替)</td><td>纯色墙前定点双人,无人流慢慢拍</td><td>09:15–10:00 柔和散光</td><td><span class="badge">高</span></td></tr>
+              <tr><td>④</td><td>八卦楼 / 领事馆区</td><td>仰拍圆顶,树影下侧身回头复古感</td><td>15:30–16:15 下午侧光</td><td><span class="badge mid">中</span></td></tr>
+              <tr><td>⑤</td><td>大德记浴场</td><td>海 + 沙滩 + 双子塔大景,海风吹纱</td><td>17:00–18:00 夕阳金光</td><td><span class="badge mid">中</span></td></tr>
+            </table>
+          </div>
+          <div class="note reveal">🚶 <b>动线:</b>三丘田码头 → ①最美转角(清晨) → ②鼓新路 → ③白色转角 → 午餐龙头路换装 → ④领事馆区 → ⑤大德记浴场看夕阳。全程步行穿平底鞋。&nbsp;&nbsp;📅 <b>季节:</b>避开雨季台风季(3–5、7–8 月),最佳 10–11 月。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 服装与造型(含道具) -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase prep">📋 拍前准备</span><h2 class="htitle">服装与造型<small>含道具清单</small></h2></div>
+          <div class="pg"><b>05</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="grid g2 fill">
+            <div class="card reveal">
+              <h3>👗 服装(参考爆款)</h3>
+              <ul class="clean">
+                <li>主套:白色简约长纱(轻盈易被海风吹起)</li>
+                <li>便装套:法式碎花裙 / 卡其长裙 + 复古衬衫</li>
+                <li>攻略强调:穿纯色 / 浅色更出片,避免荧光色</li>
+              </ul>
+              <div class="src">穿搭来源:<a href="https://hk.trip.com/moments/theme/poi-most-beautiful-corner-56809810-comprehensive-guides-993136">最美轉角攻略</a> · <a href="https://www.163.com/dy/article/EVM6MN9J05456JIS.html">鼓浪屿婚纱照最全攻略</a></div>
+            </div>
+            <div class="card reveal">
+              <h3>💄 妆发方向</h3>
+              <ul class="clean">
+                <li>底妆:透明感裸妆,海岛潮湿主打哑光防出油</li>
+                <li>发型:微卷散发 / 低盘发,留发丝给海风吹</li>
+                <li>夕阳套:适当提高腮红唇色饱和度对抗暖光</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card reveal fill">
+            <h3>🎒 道具与装备清单</h3>
+            <div class="grid g3">
+              <ul class="clean"><li>复古相机 / 拎咖啡(高频道具)</li><li>草帽 / 复古墨镜</li></ul>
+              <ul class="clean"><li>平底鞋(沙滩 + 石板路必备)</li><li>多套便装(海岛潮湿难干)</li></ul>
+              <ul class="clean"><li>防晒伞 + 补妆包 + 定型喷雾</li><li>小扇 / 喷雾辅助吹纱</li></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 风险与备选 -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase prep">📋 拍前准备</span><h2 class="htitle">风险与备选<small>出发前要心里有数</small></h2></div>
+          <div class="pg"><b>06</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="grid g2 fill reveal">
+            <div class="card">
+              <h3>⚠️ 来自攻略的高频坑</h3>
+              <ul class="clean">
+                <li>旺季最美转角人挤人,一处要等半小时才有干净背景</li>
+                <li>雨季台风季(3–5、7–8 月)海景泡汤</li>
+                <li>船票需提前实名预约,旺季现场无票;岛上全靠步行</li>
+                <li>紫外线强、气候潮湿,衣物难干</li>
+              </ul>
+              <div class="src">来源:<a href="https://m.thepaper.cn/newsDetail_forward_1269726">澎湃 · 挤到鼓浪屿拍婚纱照</a> · <a href="https://www.163.com/dy/article/EVM6MN9J05456JIS.html">鼓浪屿婚纱照最全攻略</a></div>
+            </div>
+            <div class="card">
+              <h3>🛟 备选方案</h3>
+              <ul class="clean">
+                <li>网红点人多 → 切白色转角 / 冷门小巷 / 内厝澳</li>
+                <li>阴雨 → 领事馆廊下、洋楼室内窗光拍情绪片</li>
+                <li>提前 1 个月订工作室与船票,清晨首班抢机位</li>
+                <li>备好平底鞋、多套便装、防晒伞、补妆包</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 📸 拍摄中 ===== -->
+
+    <!-- 07 机位造型 Demo · 构图 -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase shoot">📸 拍摄中</span><h2 class="htitle">机位造型 Demo · 构图<small>左:小红书同款 / 右:可模仿线稿</small></h2></div>
+          <div class="pg"><b>07</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="demowrap">
+            <div class="demo reveal">
+              <div class="pair">
+                <figure>
+                  <span class="tag-img">参考图</span>
+                  <img class="ph" src="https://p-mira-img-sign-sgnontt.byteintl.net/tos-mya-i-xobrcjvdq7/f6833bbb43254943890a4ebcc76bd115.jpeg~tplv-xobrcjvdq7-image-jpeg.jpeg?lk3s=3523e930&x-orig-authkey=miraorigin&x-orig-expires=1783339200&x-orig-sign=OtzwlHSWEWnJC8XXBqwX4fkofdo%3D" alt="旋转楼梯框架参考">
+                  <div class="pcap">同款效果参考 · <a href="https://hk.trip.com/moments/theme/poi-most-beautiful-corner-56809810-comprehensive-guides-993136">最美轉角攻略</a></div>
+                </figure>
+                <figure>
+                  <span class="tag-sk">线稿</span>
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" stroke="#241f1a" fill="none" stroke-width="2">
+                    <rect x="6" y="6" width="188" height="188" stroke="#b5613f" stroke-dasharray="4 4"/>
+                    <path d="M30 188 Q40 140 80 122 Q140 98 165 56"/>
+                    <path d="M48 192 Q60 150 95 132 Q150 112 175 72" stroke="#c9bba6"/>
+                    <circle cx="92" cy="112" r="9"/><line x1="92" y1="121" x2="92" y2="155"/>
+                    <line x1="92" y1="132" x2="104" y2="142"/><line x1="92" y1="155" x2="85" y2="184"/><line x1="92" y1="155" x2="99" y2="184"/>
+                    <circle cx="116" cy="108" r="10"/><line x1="116" y1="118" x2="116" y2="155"/>
+                    <line x1="116" y1="132" x2="104" y2="142" stroke="#b5613f"/><line x1="116" y1="155" x2="109" y2="185"/><line x1="116" y1="155" x2="123" y2="185"/>
+                    <text x="160" y="22" font-size="11" fill="#bf8f4a" stroke="none">☀光</text>
+                    <line x1="166" y1="28" x2="140" y2="60" stroke="#bf8f4a" stroke-dasharray="3 3"/>
+                  </svg>
+                  <div class="pcap">站位 / 机位 / 光向</div>
+                </figure>
+              </div>
+              <div class="cap"><span class="dn">Demo 1</span> · 旋转楼梯框架</div>
+              <div class="match">📐 参考图楼梯弧线 = 线稿左下→右上引导线;两人立弧线中段交点。</div>
+              <div class="pmeta"><b>姿势:</b>侧身牵手相望,前脚虚点重心后移。　<b>妆容:</b>精致裸妆 + 低盘发。</div>
+            </div>
+            <div class="demo reveal">
+              <div class="pair">
+                <figure>
+                  <span class="tag-img">参考图</span>
+                  <img class="ph" src="https://p-mira-img-sign-sgnontt.byteintl.net/tos-mya-i-xobrcjvdq7/819507bbb3dc4d46bf91dd545c7c046e.jpeg~tplv-xobrcjvdq7-image-jpeg.jpeg?lk3s=3523e930&x-orig-authkey=miraorigin&x-orig-expires=1783339200&x-orig-sign=33stznfvOhZw5UdwYEhX%2FOO%2BnLY%3D" alt="红砖街道引导线参考">
+                  <div class="pcap">同款效果参考 · <a href="https://hk.trip.com/moments/theme/poi-most-beautiful-corner-56809810-comprehensive-guides-993136">鼓新路红砖洋楼</a></div>
+                </figure>
+                <figure>
+                  <span class="tag-sk">线稿</span>
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" stroke="#241f1a" fill="none" stroke-width="2">
+                    <rect x="6" y="6" width="188" height="188" stroke="#b5613f" stroke-dasharray="4 4"/>
+                    <line x1="6" y1="55" x2="194" y2="55" stroke="#d4c7b2"/>
+                    <line x1="6" y1="28" x2="40" y2="55"/><line x1="40" y1="20" x2="70" y2="46"/>
+                    <line x1="69" y1="6" x2="69" y2="194" stroke="#ddd2bf"/><line x1="132" y1="6" x2="132" y2="194" stroke="#ddd2bf"/>
+                    <circle cx="118" cy="92" r="9"/><line x1="118" y1="101" x2="116" y2="140"/>
+                    <line x1="116" y1="140" x2="108" y2="180"/><line x1="116" y1="140" x2="124" y2="178"/>
+                    <circle cx="138" cy="88" r="10"/><line x1="138" y1="98" x2="136" y2="140"/>
+                    <line x1="136" y1="140" x2="128" y2="180"/><line x1="136" y1="140" x2="144" y2="178"/>
+                    <line x1="118" y1="112" x2="138" y2="108" stroke="#b5613f"/>
+                  </svg>
+                  <div class="pcap">站位 / 机位 / 三分线</div>
+                </figure>
+              </div>
+              <div class="cap"><span class="dn">Demo 2</span> · 红砖街道引导线</div>
+              <div class="match">📐 参考图街道收窄透视 = 线稿引导线;人物始终落右三分线。</div>
+              <div class="pmeta"><b>姿势:</b>边走边聊不看镜头,手轻扶墙。　<b>妆容:</b>氧气裸妆 + 微卷散发。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 机位造型 Demo · 姿势 -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase shoot">📸 拍摄中</span><h2 class="htitle">机位造型 Demo · 姿势<small>左:小红书同款 / 右:可模仿线稿</small></h2></div>
+          <div class="pg"><b>08</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="demowrap">
+            <div class="demo reveal">
+              <div class="pair">
+                <figure>
+                  <span class="tag-img">参考图</span>
+                  <img class="ph" src="https://p-mira-img-sign-sgnontt.byteintl.net/tos-mya-i-xobrcjvdq7/3f23c63bb86a4008bab16d82c2a2563a.jpeg~tplv-xobrcjvdq7-image-jpeg.jpeg?lk3s=3523e930&x-orig-authkey=miraorigin&x-orig-expires=1783339200&x-orig-sign=DPgh7HHNTbpv%2FeokhowC1cSBuIM%3D" alt="额头相抵牵手参考">
+                  <div class="pcap">同款效果参考 · <a href="https://hk.trip.com/moments/theme/poi-most-beautiful-corner-56809810-comprehensive-guides-993136">鼓浪屿婚纱机位攻略</a></div>
+                </figure>
+                <figure>
+                  <span class="tag-sk">线稿</span>
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" stroke="#241f1a" fill="none" stroke-width="2">
+                    <circle cx="78" cy="42" r="13"/><line x1="78" y1="55" x2="78" y2="130"/>
+                    <path d="M78 84 Q98 90 108 94"/><line x1="78" y1="130" x2="68" y2="184"/><line x1="78" y1="130" x2="86" y2="182"/>
+                    <circle cx="124" cy="38" r="13"/><line x1="124" y1="51" x2="124" y2="130"/>
+                    <path d="M124 84 Q112 92 108 94" stroke="#b5613f"/><line x1="124" y1="130" x2="116" y2="182"/><line x1="124" y1="130" x2="134" y2="184"/>
+                  </svg>
+                  <div class="pcap">站位 / 朝向</div>
+                </figure>
+              </div>
+              <div class="cap"><span class="dn">Demo 3</span> · 额头相抵牵手</div>
+              <div class="match">📐 参考图额头相触三角构图 = 线稿两头部内倾、双手中央成交点。</div>
+              <div class="pmeta"><b>姿势:</b>下巴微收,鼻尖留一指缝隙更自然。　<b>妆容:</b>透明底妆 + 珠光提亮。</div>
+            </div>
+            <div class="demo reveal">
+              <div class="pair">
+                <figure>
+                  <span class="tag-img">参考图</span>
+                  <img class="ph" src="https://p-mira-img-sign-sgnontt.byteintl.net/tos-mya-i-xobrcjvdq7/027094cdfff547fc97a57e85623dfe17.jpeg~tplv-xobrcjvdq7-image-jpeg.jpeg?lk3s=3523e930&x-orig-authkey=miraorigin&x-orig-expires=1783339200&x-orig-sign=fch7Inb0n%2FGHBIXg9l4UlQookvY%3D" alt="牵手回眸前行参考">
+                  <div class="pcap">同款效果参考 · <a href="https://hk.trip.com/moments/theme/poi-most-beautiful-corner-56809810-comprehensive-guides-993136">鼓浪屿婚纱机位攻略</a></div>
+                </figure>
+                <figure>
+                  <span class="tag-sk">线稿</span>
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" stroke="#241f1a" fill="none" stroke-width="2">
+                    <circle cx="70" cy="44" r="13"/><line x1="70" y1="57" x2="74" y2="130"/>
+                    <path d="M72 86 Q92 90 104 96"/><line x1="74" y1="130" x2="64" y2="184"/><line x1="74" y1="130" x2="84" y2="180"/>
+                    <circle cx="128" cy="40" r="13"/>
+                    <path d="M128 53 Q132 94 130 132"/>
+                    <path d="M129 86 Q116 94 104 96" stroke="#b5613f"/>
+                    <path d="M130 132 Q150 162 158 192 L108 192 Q118 160 130 132"/>
+                  </svg>
+                  <div class="pcap">站位 / 动态</div>
+                </figure>
+              </div>
+              <div class="cap"><span class="dn">Demo 4</span> · 牵手回眸前行</div>
+              <div class="match">📐 参考图新娘扭身回眸角度 = 线稿头部转镜约 45°;前牵手臂成引导线。</div>
+              <div class="pmeta"><b>姿势:</b>连续行走连拍,取发丝 / 裙摆扬起瞬间。　<b>妆容:</b>哑光防出油 + 定型喷雾。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09 机位造型 Demo · 海景 -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase shoot">📸 拍摄中</span><h2 class="htitle">机位造型 Demo · 海景<small>左:小红书同款 / 右:可模仿线稿</small></h2></div>
+          <div class="pg"><b>09</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="demowrap">
+            <div class="demo reveal">
+              <div class="pair">
+                <figure>
+                  <span class="tag-img">参考图</span>
+                  <img class="ph" src="https://p-mira-img-sign-sgnontt.byteintl.net/tos-mya-i-xobrcjvdq7/4444f246a7114fbeaa4015dfe5cf2661.jpeg~tplv-xobrcjvdq7-image-jpeg.jpeg?lk3s=3523e930&x-orig-authkey=miraorigin&x-orig-expires=1783339200&x-orig-sign=NWiApETEzOenN%2BAruXucOv6%2B%2FjU%3D" alt="海边相拥仰头参考">
+                  <div class="pcap">同款效果参考 · <a href="https://hk.trip.com/moments/theme/poi-most-beautiful-corner-56809810-comprehensive-guides-993136">大德记浴场海景</a></div>
+                </figure>
+                <figure>
+                  <span class="tag-sk">线稿</span>
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" stroke="#241f1a" fill="none" stroke-width="2">
+                    <line x1="6" y1="138" x2="194" y2="138" stroke="#5f8a9c" stroke-dasharray="3 3"/>
+                    <circle cx="86" cy="48" r="13"/><line x1="86" y1="61" x2="90" y2="138"/>
+                    <path d="M88 86 Q108 80 120 74"/><line x1="90" y1="138" x2="82" y2="188"/><line x1="90" y1="138" x2="98" y2="186"/>
+                    <circle cx="116" cy="44" r="13"/><line x1="116" y1="57" x2="114" y2="138"/>
+                    <path d="M114 86 Q98 80 88 74" stroke="#b5613f"/><line x1="114" y1="138" x2="106" y2="188"/><line x1="114" y1="138" x2="124" y2="186"/>
+                    <text x="146" y="30" font-size="11" fill="#bf8f4a" stroke="none">☀逆光</text>
+                    <line x1="150" y1="36" x2="120" y2="60" stroke="#bf8f4a" stroke-dasharray="3 3"/>
+                  </svg>
+                  <div class="pcap">站位 / 留白 / 逆光</div>
+                </figure>
+              </div>
+              <div class="cap"><span class="dn">Demo 5</span> · 海边相拥仰头</div>
+              <div class="match">📐 参考图低海平线让出 2/3 天空 = 线稿海平线压低,人物立海天之间。</div>
+              <div class="pmeta"><b>姿势:</b>逆光下压低海平线,拍剪影或开闪补光。　<b>妆容:</b>防水妆 + 提高腮红唇色饱和度。</div>
+            </div>
+            <div class="demo tips reveal">
+              <h3>📸 五个 Demo 通用要诀</h3>
+              <ul class="clean">
+                <li>每个机位都先按「参考图」复刻一版,再尝试 1 个差异化升级</li>
+                <li>姿势宁动勿僵:行走、回眸、互动抓拍优先于站定摆拍</li>
+                <li>线稿右上的 ☀ 标注 = 主光方向,逆光记得对人脸补光</li>
+                <li>同一机位连拍 3–5 张,挑发丝 / 裙摆 / 表情最自然的一张</li>
+              </ul>
+              <div class="note">说明:左侧参考图本轮为生图模型按爆款描述生成的示意样张,正式运行将替换为攻略原文真实样张。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 拍摄流程 & Shot List(合并) -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase shoot">📸 拍摄中</span><h2 class="htitle">拍摄流程 &amp; Shot List<small>一天怎么走 · 镜头清单合一</small></h2></div>
+          <div class="pg"><b>10</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="tablefill reveal">
+            <table>
+              <tr><th>时段</th><th>地点 / 环节</th><th>镜头与动作要点</th><th>光线</th><th>优先级</th></tr>
+              <tr><td>06:00</td><td>三丘田码头集合</td><td>首班船上岛,化妆换白纱(筹备)</td><td>—</td><td>—</td></tr>
+              <tr><td>06:30–07:30</td><td>最美转角 · Demo 1</td><td>旋转楼梯框架,牵手相望</td><td>清晨柔光 · 抢人少</td><td class="pri-h">高</td></tr>
+              <tr><td>08:00–09:00</td><td>鼓新路 · Demo 2</td><td>红砖墙手扶墙行走抓拍</td><td>斜射晨光</td><td class="pri-h">高</td></tr>
+              <tr><td>09:15–10:00</td><td>白色转角 · Demo 3</td><td>纯墙前额头相抵特写</td><td>柔和散光</td><td class="pri-m">中</td></tr>
+              <tr><td>12:00–14:00</td><td>龙头路午餐 + 换装</td><td>避正午顶光与人流,换便装(休整)</td><td>—</td><td>—</td></tr>
+              <tr><td>15:30–16:15</td><td>八卦楼 / 领事馆区</td><td>仰拍圆顶 + 树影侧身回头</td><td>下午侧光</td><td class="pri-m">中</td></tr>
+              <tr><td>17:00–18:00</td><td>大德记浴场 · Demo 4/5</td><td>海边相拥、回眸前行,纱被海风吹起</td><td>夕阳金光</td><td class="pri-h">高</td></tr>
+              <tr><td>18:00–18:30</td><td>双子塔大景</td><td>蓝调时刻剪影远景收尾</td><td>蓝调时刻</td><td class="pri-m">中</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 🎨 后期 ===== -->
+
+    <!-- 11 后期参考 -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="head">
+          <div class="left"><span class="phase post">🎨 后期</span><h2 class="htitle">后期参考<small>调色方向与工具</small></h2></div>
+          <div class="pg"><b>11</b> / 11</div>
+        </div>
+        <div class="body">
+          <div class="grid g2 fill reveal">
+            <div class="card">
+              <h3>🎨 调色方向</h3>
+              <ul class="clean">
+                <li>整体:暖调复古电影感,降饱和、加轻微褪色</li>
+                <li>红砖墙提亮,夕阳金色温往暖偏移</li>
+                <li>海景套:提通透度,蓝青往莫兰迪偏</li>
+                <li>肤色:橙黄通道微调,白皙不蜡黄</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>🛠️ 推荐工具 / 预设</h3>
+              <ul class="clean">
+                <li>Lightroom 调曲线 + HSL 分通道</li>
+                <li>胶片预设:Kodak Portra / Gold 暖色系</li>
+                <li>手机端:VSCO(A 系列)、醒图复古滤镜</li>
+                <li>统一一套预设套全组,保证调性一致</li>
+              </ul>
+            </div>
+          </div>
+          <div class="note reveal">🎬 <b>交付建议:</b>精修 20–30 张主图统一调色,海景套与洋楼套各保留一组、风格不混搭;输出保留一版原色 + 一版电影感供新人挑选。</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="nav-hint" id="hint">← → 翻页 · 点击左右半屏 · 空格下一页 · F 全屏</div>
+<div id="bar">
+  <button id="prev" title="上一页">‹</button>
+  <span id="counter">1 / 11</span>
+  <button id="next" title="下一页">›</button>
+  <button id="full" title="全屏">⛶</button>
+</div>
+
+<script>
+/* ===========================================
+   SLIDE CONTROLLER — fixed 1280×720 stage
+   =========================================== */
+var stage = document.getElementById('deckStage');
+var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+var idx = 0;
+var counter = document.getElementById('counter');
+var progress = document.getElementById('progress');
+
+function show(n){
+  idx = Math.max(0, Math.min(slides.length-1, n));
+  slides.forEach(function(s,i){
+    s.classList.toggle('active', i===idx);
+    s.classList.toggle('visible', i===idx);
+  });
+  counter.textContent = (idx+1) + ' / ' + slides.length;
+  progress.style.width = (idx/(slides.length-1)*100) + '%';
+}
+function next(){ show(idx+1); }
+function prev(){ show(idx-1); }
+
+document.getElementById('next').onclick = next;
+document.getElementById('prev').onclick = prev;
+document.getElementById('full').onclick = function(){
+  if(!document.fullscreenElement){ document.documentElement.requestFullscreen(); }
+  else { document.exitFullscreen(); }
+};
+
+document.addEventListener('keydown', function(e){
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); next(); }
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prev(); }
+  else if(e.key==='Home'){ show(0); }
+  else if(e.key==='End'){ show(slides.length-1); }
+  else if(e.key==='f'||e.key==='F'){ document.getElementById('full').click(); }
+});
+
+/* click left/right half to page (skip links + control bar) */
+document.querySelector('.deck-viewport').addEventListener('click', function(e){
+  if(e.target.closest('a')||e.target.closest('#bar')) return;
+  if(e.clientX > window.innerWidth/2) next(); else prev();
+});
+
+/* touch / swipe */
+var tx=0;
+document.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50){ dx<0?next():prev(); }
+},{passive:true});
+
+/* uniform scale-to-fit of the whole 1280×720 stage */
+function fit(){
+  var f = Math.min(window.innerWidth/1280, window.innerHeight/720);
+  var x = (window.innerWidth - 1280*f)/2;
+  var y = (window.innerHeight - 720*f)/2;
+  stage.style.transform = 'translate('+x+'px,'+y+'px) scale('+f+')';
+}
+window.addEventListener('resize', fit);
+fit(); show(0);
+
+setTimeout(function(){ var h=document.getElementById('hint'); if(h) h.style.opacity='0'; }, 4500);
+</script>
+</body>
+</html>
